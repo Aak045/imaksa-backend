@@ -38,31 +38,9 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
-// CORS — allow all origins (handles file://, localhost, and live domains)
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (file://, mobile apps, Postman)
-    // AND all listed domains
-    const allowed = [
-      'https://imaksa.ae',
-      'https://www.imaksa.ae',
-      'http://localhost:3000',
-      'http://localhost:5000',
-      'http://localhost:5500',
-      'http://127.0.0.1:5500',
-      'http://127.0.0.1:3000',
-    ];
-    if (!origin || allowed.includes(origin)) {
-      callback(null, true);
-    } else {
-      // Allow anyway during development — remove this in production
-      callback(null, true);
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+// CORS — allow all origins
+app.use(cors());
+app.options('*', cors());
 
 // Body parsers
 app.use(express.json({ limit: '10mb' }));
