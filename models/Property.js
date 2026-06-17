@@ -7,7 +7,6 @@ const propertySchema = new mongoose.Schema({
   type:        { type: String, enum: ['villa', 'penthouse', 'apartment', 'offplan', 'commercial', 'townhouse', 'Villa', 'Penthouse', 'Apartment', 'Offplan', 'Commercial', 'Townhouse'], required: true },
   listingType: { type: String, enum: ['buy', 'rent', 'sell', 'offplan'], default: 'buy' },
   status:      { type: String, enum: ['active', 'sold', 'rented', 'draft'], default: 'active' },
-  developer:   { type: String, default: '' },
   location:    { type: String, required: [true, 'Location is required'] },
   beds:        { type: String, default: '' },
   baths:       { type: String, default: '' },

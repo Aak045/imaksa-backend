@@ -22,7 +22,8 @@ router.post('/', async (req, res) => {
       source: 'website',
     });
 
-    // ── RESPOND IMMEDIATELY (don't wait for emails) ──
+    // ── RESPOND IMMEDIATELY ──
+    res.set('Connection', 'keep-alive');
     res.status(201).json({
       success: true,
       message: 'Enquiry submitted successfully! We will contact you within 24 hours.',
