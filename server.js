@@ -20,6 +20,7 @@ const propertyRoutes  = require('./routes/properties');
 const blogRoutes      = require('./routes/blogs');
 const teamRoutes      = require('./routes/team');
 const enquiryRoutes   = require('./routes/enquiries');
+const settingsRoutes  = require('./routes/settings');
 
 // ── Connect to MongoDB ──
 connectDB();
@@ -96,6 +97,7 @@ app.use('/api/properties',  propertyRoutes);
 app.use('/api/blogs',       blogRoutes);
 app.use('/api/team',        teamRoutes);
 app.use('/api/enquiries',   enquiryRoutes);
+app.use('/api/settings',    settingsRoutes);
 
 // ── Root route — health check ──
 app.get('/', (req, res) => {
