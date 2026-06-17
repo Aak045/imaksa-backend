@@ -1,40 +1,23 @@
-// routes/settings.js — Site Settings Routes
-const express = require('express');
-const router = express.Router();
-const Settings = require('../models/Settings');
-const { protect } = require('../middleware/auth');
+// models/Settings.js
+// Stores site-wide settings (contact info, social links, company info).
+// Only ONE document should ever exist in this collection — the whole
+// site reads from it, and the admin panel writes to it.
 
-// ── GET /api/settings ──
-// PUBLIC — the live website needs this to show phone/email/WhatsApp/etc.
-// There should only ever be one settings document. If none exists yet,
-// create one with defaults so the site always gets a valid response.
-router.get('/', async (req, res) => {
-  try {
-    let settings = await Settings.findOne();
-    if (!settings) {
-      settings = await Settings.create({});
-    }
-    res.status(200).json({ success: true, data: settings });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
+const mongoose = require('mongoose');
 
-// ── PUT /api/settings ──
-// PROTECTED — only logged-in admin can change site settings.
-router.put('/', protect, async (req, res) => {
-  try {
-    let settings = await Settings.findOne();
-    if (!settings) {
-      settings = await Settings.create(req.body);
-    } else {
-      Object.assign(settings, req.body);
-      await settings.save();
-    }
-    res.status(200).json({ success: true, message: 'Settings updated', data: settings });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
+const settingsSchema = new mongoose.Schema({
+  phone:   { type: String, default: '' },
+  email:   { type: String, default: '' },
+  wa:      { type: String, default: '' },   // WhatsApp number, digits only e.g. 971501234567
+  addr:    { type: String, default: '' },
+  hrs:     { type: String, default: '' },
+  maps:    { type: String, default: '' },
+  li:      { type: String, default: '' },   // LinkedIn
+  ig:      { type: String, default: '' },   // Instagram
+  fb:      { type: String, default: '' },   // Facebook
+  co:      { type: String, default: 'IMAKSA Properties LLC' },
+  rera:    { type: String, default: '' },
+  year:    { type: String, default: '2012' },
+}, { timestamps: true });
 
-module.exports = router;
+module.exports = mongoose.model('Settings', settingsSchema);
