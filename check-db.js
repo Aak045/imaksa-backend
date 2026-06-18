@@ -15,6 +15,14 @@ async function check() {
   ]);
   console.log('\nProperties by status:');
   byStatus.forEach(d => console.log(`  "${d._id || 'NO STATUS'}": ${d.count}`));
+
+  const byListing = await Property.aggregate([
+    { $group: { _id: '$listingType', count: { $sum: 1 } } },
+    { $sort: { _id: 1 } }
+  ]);
+  console.log('\nProperties by listingType (buy/rent/sell/offplan):');
+  byListing.forEach(d => console.log(`  "${d._id || 'NO LISTING TYPE'}": ${d.count}`));
+
   await mongoose.disconnect();
 }
 check().catch(e => console.error('❌', e.message));

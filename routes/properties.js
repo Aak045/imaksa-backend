@@ -8,10 +8,11 @@ const { protect } = require('../middleware/auth');
 // Public — website fetches this to show properties
 router.get('/', async (req, res) => {
   try {
-    const { type, status, featured, limit } = req.query;
+    const { type, listingType, status, featured, limit } = req.query;
     
     let query = {};
-    if (type)     query.type   = type;
+    if (type)        query.type        = type;
+    if (listingType) query.listingType = listingType;
     if (status)   query.status = status;
     if (featured) query.featured = true;
     
