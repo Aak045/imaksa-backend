@@ -5,7 +5,7 @@ const propertySchema = new mongoose.Schema({
   name:        { type: String, required: [true, 'Property name is required'], trim: true },
   price:       { type: String, required: [true, 'Price is required'] },
   type:        { type: String, enum: ['villa', 'penthouse', 'apartment', 'offplan', 'commercial', 'townhouse', 'Villa', 'Penthouse', 'Apartment', 'Offplan', 'Commercial', 'Townhouse'], required: true },
-  listingType: { type: String, enum: ['buy', 'rent', 'sell', 'offplan'], default: 'buy' },
+  listingType: { type: String, enum: ['buy', 'rent', 'offplan'], default: 'buy' },
   status:      { type: String, enum: ['active', 'sold', 'rented', 'draft'], default: 'active' },
   location:    { type: String, required: [true, 'Location is required'] },
   beds:        { type: String, default: '' },

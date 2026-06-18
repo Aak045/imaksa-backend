@@ -21,6 +21,7 @@ const blogRoutes      = require('./routes/blogs');
 const teamRoutes      = require('./routes/team');
 const enquiryRoutes   = require('./routes/enquiries');
 const settingsRoutes  = require('./routes/settings');
+const sellRequestRoutes = require('./routes/sellrequests');
 
 // ── Connect to MongoDB ──
 connectDB();
@@ -98,6 +99,7 @@ app.use('/api/blogs',       blogRoutes);
 app.use('/api/team',        teamRoutes);
 app.use('/api/enquiries',   enquiryRoutes);
 app.use('/api/settings',    settingsRoutes);
+app.use('/api/sellrequests', sellRequestRoutes);
 
 // ── Root route — health check ──
 app.get('/', (req, res) => {
@@ -111,6 +113,7 @@ app.get('/', (req, res) => {
       blogs:       '/api/blogs',
       team:        '/api/team',
       enquiries:   '/api/enquiries',
+      sellrequests: '/api/sellrequests',
     },
   });
 });

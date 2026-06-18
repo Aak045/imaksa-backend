@@ -88,6 +88,88 @@ const sendEnquiryEmail = async (enquiry) => {
 };
 
 // ── Send Confirmation to Client/Lead ──
+// ── Send Sell Request Email to Client (admin) ──
+const sendSellRequestEmail = async (req) => {
+  const mailOptions = {
+    from: `"IMAKSA Website" <${process.env.EMAIL_USER}>`,
+    to: process.env.CLIENT_EMAIL,
+    subject: `🏷️ New Sell Request from ${req.name}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
+
+        <!-- HEADER -->
+        <div style="background:#0D4F4A;padding:28px 32px;">
+          <h1 style="color:#F5EFE4;font-size:22px;margin:0;letter-spacing:3px;">IMAKSA</h1>
+          <p style="color:rgba(245,239,228,.6);font-size:12px;margin:4px 0 0;letter-spacing:2px;text-transform:uppercase;">New Sell Request</p>
+        </div>
+
+        <!-- BODY -->
+        <div style="padding:32px;">
+          <h2 style="color:#0D4F4A;font-size:20px;margin:0 0 24px;">Someone wants to sell a property!</h2>
+
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;width:35%;">Full Name</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;font-weight:600;">${req.name}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Email</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;"><a href="mailto:${req.email}" style="color:#0D4F4A;">${req.email}</a></td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Phone</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;"><a href="tel:${req.phone}" style="color:#0D4F4A;">${req.phone}</a></td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Property Type</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;">${req.propertyType || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Location</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;">${req.location || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Size</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;">${req.size || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;">Asking Price</td>
+              <td style="padding:12px 0;border-bottom:1px solid #DDD3C0;font-size:14px;color:#0A0A0A;">${req.askingPrice || 'Not specified'}</td>
+            </tr>
+          </table>
+
+          <!-- NOTES -->
+          <div style="margin-top:24px;">
+            <p style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:10px;">Notes from Seller</p>
+            <div style="background:#F5EFE4;border-left:3px solid #0D4F4A;padding:16px;font-size:14px;color:#0A0A0A;line-height:1.7;">
+              ${req.notes || 'No notes provided'}
+            </div>
+          </div>
+
+          <!-- CTA BUTTONS -->
+          <div style="margin-top:28px;display:flex;gap:12px;">
+            <a href="mailto:${req.email}?subject=Re: Your Property Sell Request - IMAKSA"
+               style="display:inline-block;background:#0D4F4A;color:#F5EFE4;padding:12px 24px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:600;">
+              ✉️ Reply by Email
+            </a>
+            <a href="https://wa.me/${req.phone?.replace(/\D/g, '')}?text=Hi ${req.name}, thank you for reaching out about selling your property with IMAKSA."
+               style="display:inline-block;background:#25D366;color:#fff;padding:12px 24px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:600;">
+              💬 WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div style="background:#EDE5D8;padding:20px 32px;text-align:center;">
+          <p style="font-size:11px;color:#888;margin:0;">This email was sent automatically by your IMAKSA website</p>
+        </div>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
 const sendConfirmationEmail = async (enquiry) => {
   const mailOptions = {
     from: `"IMAKSA Properties" <${process.env.EMAIL_USER}>`,
@@ -137,4 +219,4 @@ const verifyEmail = async () => {
   }
 };
 
-module.exports = { sendEnquiryEmail, sendConfirmationEmail, verifyEmail };
+module.exports = { sendEnquiryEmail, sendConfirmationEmail, sendSellRequestEmail, verifyEmail };
