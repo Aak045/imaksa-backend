@@ -5,11 +5,12 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
-  secure: false, // true for port 465
+  secure: Number(process.env.EMAIL_PORT) === 465, // true for port 465, false for 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  connectionTimeout: 15000, // fail faster with a clear error instead of hanging
 });
 
 // ── Send Enquiry Email to Client ──
