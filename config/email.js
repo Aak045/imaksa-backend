@@ -1,25 +1,19 @@
-// config/email.js — Nodemailer Email Setup
-const nodemailer = require('nodemailer');
+// config/email.js — Resend Email Setup
+// Switched from Nodemailer/SMTP to Resend's HTTPS API because Railway
+// blocks outbound SMTP ports (25/465/587) on this plan, causing every
+// email to time out. Resend sends over HTTPS (port 443), which is
+// never blocked, since that's how the whole app already talks to MongoDB/APIs.
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Create transporter (Gmail)
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: Number(process.env.EMAIL_PORT) === 465, // true for port 465, false for 587
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  connectionTimeout: 15000, // fail faster with a clear error instead of hanging
-});
+// Default "from" address. Resend's free shared address works with zero setup.
+// Once imaksa.ae is connected + verified in Resend, change this to
+// something like 'IMAKSA Properties <noreply@imaksa.ae>' for full branding.
+const FROM_ADDRESS = process.env.RESEND_FROM || 'IMAKSA Properties <onboarding@resend.dev>';
 
 // ── Send Enquiry Email to Client ──
 const sendEnquiryEmail = async (enquiry) => {
-  const mailOptions = {
-    from: `"IMAKSA Website" <${process.env.EMAIL_USER}>`,
-    to: process.env.CLIENT_EMAIL,
-    subject: `🏡 New Property Enquiry from ${enquiry.name}`,
-    html: `
+  const html = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
         
         <!-- HEADER -->
@@ -82,20 +76,19 @@ const sendEnquiryEmail = async (enquiry) => {
           <p style="font-size:11px;color:#888;margin:4px 0 0;">© 2025 IMAKSA Properties LLC. RERA Licensed.</p>
         </div>
       </div>
-    `,
-  };
+    `;
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: process.env.CLIENT_EMAIL,
+    subject: `🏡 New Property Enquiry from ${enquiry.name}`,
+    html,
+  });
 };
 
-// ── Send Confirmation to Client/Lead ──
 // ── Send Sell Request Email to Client (admin) ──
 const sendSellRequestEmail = async (req) => {
-  const mailOptions = {
-    from: `"IMAKSA Website" <${process.env.EMAIL_USER}>`,
-    to: process.env.CLIENT_EMAIL,
-    subject: `🏷️ New Sell Request from ${req.name}`,
-    html: `
+  const html = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
 
         <!-- HEADER -->
@@ -165,18 +158,19 @@ const sendSellRequestEmail = async (req) => {
           <p style="font-size:11px;color:#888;margin:0;">This email was sent automatically by your IMAKSA website</p>
         </div>
       </div>
-    `,
-  };
+    `;
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: process.env.CLIENT_EMAIL,
+    subject: `🏷️ New Sell Request from ${req.name}`,
+    html,
+  });
 };
 
+// ── Send Confirmation to Client/Lead ──
 const sendConfirmationEmail = async (enquiry) => {
-  const mailOptions = {
-    from: `"IMAKSA Properties" <${process.env.EMAIL_USER}>`,
-    to: enquiry.email,
-    subject: `Thank you for your enquiry — IMAKSA Properties`,
-    html: `
+  const html = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
         <div style="background:#0D4F4A;padding:28px 32px;">
           <h1 style="color:#F5EFE4;font-size:22px;margin:0;letter-spacing:3px;">IMAKSA</h1>
@@ -204,20 +198,23 @@ const sendConfirmationEmail = async (enquiry) => {
           <p style="font-size:11px;color:#888;margin:0;">© 2025 IMAKSA Properties LLC. RERA Licensed.</p>
         </div>
       </div>
-    `,
-  };
+    `;
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: enquiry.email,
+    subject: `Thank you for your enquiry — IMAKSA Properties`,
+    html,
+  });
 };
 
-// ── Verify connection ──
+// ── Verify connection (just checks the API key is present; Resend has no persistent connection to test) ──
 const verifyEmail = async () => {
-  try {
-    await transporter.verify();
-    console.log('✅ Email server ready');
-  } catch (err) {
-    console.log('⚠️  Email not configured:', err.message);
+  if (!process.env.RESEND_API_KEY) {
+    console.log('⚠️  Email not configured: RESEND_API_KEY missing');
+    return;
   }
+  console.log('✅ Email ready (Resend API)');
 };
 
 module.exports = { sendEnquiryEmail, sendConfirmationEmail, sendSellRequestEmail, verifyEmail };
