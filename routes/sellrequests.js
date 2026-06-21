@@ -32,9 +32,9 @@ router.post('/', async (req, res) => {
     setImmediate(async () => {
       try {
         await sendSellRequestEmail(sellRequest);
-        console.log('✅ Sell request email sent for:', sellRequest.name);
+        console.log('✅ Sell request notification sent for:', sellRequest.name, '→', process.env.CLIENT_EMAIL);
       } catch (emailErr) {
-        console.log('⚠️ Email failed (sell request still saved):', emailErr.message);
+        console.log('⚠️ Sell request notification FAILED for:', sellRequest.name, '→', process.env.CLIENT_EMAIL, '| Error:', emailErr.message);
       }
     });
 

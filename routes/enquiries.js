@@ -30,14 +30,22 @@ router.post('/', async (req, res) => {
     });
 
     // ── Send emails in BACKGROUND (after response sent) ──
-    // This way the website never hangs waiting for email
+    // This way the website never hangs waiting for email.
+    // Each email is fully independent — if one fails, the other still sends,
+    // and we log clearly which one succeeded/failed.
     setImmediate(async () => {
       try {
         await sendEnquiryEmail(enquiry);
-        await sendConfirmationEmail(enquiry);
-        console.log('✅ Enquiry emails sent for:', enquiry.name);
+        console.log('✅ Client notification email sent for:', enquiry.name, '→', process.env.CLIENT_EMAIL);
       } catch (emailErr) {
-        console.log('⚠️ Email failed (enquiry still saved):', emailErr.message);
+        console.log('⚠️ Client notification email FAILED for:', enquiry.name, '→', process.env.CLIENT_EMAIL, '| Error:', emailErr.message);
+      }
+
+      try {
+        await sendConfirmationEmail(enquiry);
+        console.log('✅ Confirmation email sent for:', enquiry.name, '→', enquiry.email);
+      } catch (emailErr) {
+        console.log('⚠️ Confirmation email FAILED for:', enquiry.name, '→', enquiry.email, '| Error:', emailErr.message);
       }
     });
 

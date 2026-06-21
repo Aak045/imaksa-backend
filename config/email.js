@@ -13,6 +13,9 @@ const FROM_ADDRESS = process.env.RESEND_FROM || 'IMAKSA Properties <onboarding@r
 
 // ── Send Enquiry Email to Client ──
 const sendEnquiryEmail = async (enquiry) => {
+  if (!process.env.CLIENT_EMAIL) {
+    throw new Error('CLIENT_EMAIL environment variable is not set — cannot send notification');
+  }
   const html = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
         
@@ -88,6 +91,9 @@ const sendEnquiryEmail = async (enquiry) => {
 
 // ── Send Sell Request Email to Client (admin) ──
 const sendSellRequestEmail = async (req) => {
+  if (!process.env.CLIENT_EMAIL) {
+    throw new Error('CLIENT_EMAIL environment variable is not set — cannot send notification');
+  }
   const html = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#FAFAF8;border:1px solid #DDD3C0;">
 
