@@ -14,6 +14,7 @@ const propertySchema = new mongoose.Schema({
   badge:       { type: String, default: '' },
   desc:        { type: String, default: '' },
   img:         { type: String, default: '' },
+  images:      { type: [String], default: [] },
   handover:    { type: String, default: '' },
   payplan:     { type: String, default: '' },
   featured:    { type: Boolean, default: false },
