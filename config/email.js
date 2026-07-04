@@ -196,8 +196,8 @@ const sendConfirmationEmail = async (enquiry) => {
             In the meantime, browse our latest listings at <a href="${process.env.FRONTEND_URL}/properties.html" style="color:#0D4F4A;">imaksa.ae/properties</a>
           </p>
           <div style="margin-top:24px;padding-top:20px;border-top:1px solid #DDD3C0;">
-            <p style="font-size:12px;color:#888;margin:0;">📞 +971 4 XXX XXXX &nbsp;|&nbsp; ✉️ info@imaksa.ae</p>
-            <p style="font-size:12px;color:#888;margin:4px 0 0;">📍 Business Bay, Dubai, UAE &nbsp;|&nbsp; Mon–Sat: 9am–7pm</p>
+            <p style="font-size:12px;color:#888;margin:0;">📞 <a href="tel:+97142669295" style="color:#888;text-decoration:none;">+971 4 2669295</a> &nbsp;|&nbsp; ✉️ <a href="mailto:sales@imaksa.ae" style="color:#888;text-decoration:none;">sales@imaksa.ae</a></p>
+            <p style="font-size:12px;color:#888;margin:4px 0 0;">📍 Business Village, Dubai, UAE &nbsp;|&nbsp; Mon–Sat: 9am–7pm</p>
           </div>
         </div>
         <div style="background:#EDE5D8;padding:16px 32px;text-align:center;">
